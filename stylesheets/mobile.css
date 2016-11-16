@@ -119,6 +119,11 @@ div.shell {
   margin: 0 auto;
 }
 
+a {
+  color: red;
+  font-size: 15px;
+}
+
 a#forkme_banner {
   display: none;
 }
