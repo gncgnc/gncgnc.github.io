@@ -119,8 +119,8 @@ div.shell {
   margin: 0 auto;
 }
 
-a {
-  color: red;
+a#tumblr-link{
+  background: red;
   font-size: 15px;
 }
 
