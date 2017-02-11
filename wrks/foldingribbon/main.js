@@ -41,5 +41,11 @@ function keyPressed(){
 }
 
 function mousePressed(){
-  ribbon = new Ribbon(mouseX,mouseY)
+	var rx = snap(mouseX, ribbon.size)
+	var ry = snap(mouseY, ribbon.size)
+  ribbon = new Ribbon(rx, ry)
+}
+
+function snap(x, bin){
+	return int(x/bin)*bin
 }

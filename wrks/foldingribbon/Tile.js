@@ -7,7 +7,9 @@ var Tile = function(x,y,type){
   
   this.show = function(){
     push()
-    translate(this.x, this.y)
+    var trX = this.wrap(this.x, width),
+        trY = this.wrap(this.y, height); 
+    translate(trX, trY)
     switch(this.type){
       case 0: 
         rect(0, 0, this.size, this.size)
@@ -34,5 +36,9 @@ var Tile = function(x,y,type){
              this.size, this.size, 
              0, this.size)
     pop()
+  }
+
+  this.wrap = function(x, bin){
+    return x - floor(x / bin) * bin
   }
 }
