@@ -4,14 +4,24 @@
 var ribbon, 
     tileSize = 20, 
     maxTiles = 100, 
-    framesPerStep = 5,
+    framesPerStep = 1,
     straigtWeight = 5;
 
 function setup() {
-  createCanvas(windowWidth-10, windowHeight-10);
+  const myCanvas = createCanvas(600, 600).elt;
+  myCanvas.id = "myCanvas";
+  if(windowHeight > windowWidth) {
+  	myCanvas.style.width = "90vw"
+  	myCanvas.style.height = "90vw"
+  } else {
+		myCanvas.style.width = "90vh"
+  	myCanvas.style.height = "90vh"  	
+  }
+
+
   noStroke()
   
-  ribbon = new Ribbon(300,300)
+  ribbon = new Ribbon(width*.5,height*.5)
   fill(255)
 }
 
@@ -33,4 +43,3 @@ function keyPressed(){
 function mousePressed(){
   ribbon = new Ribbon(mouseX,mouseY)
 }
-
