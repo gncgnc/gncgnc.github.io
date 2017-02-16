@@ -5,10 +5,17 @@ function Ribbon(x, y) {
   this.tiles.push(this.currTile)
 
   this.size = tileSize || width / 20;
+
+  this.col1 = col1 || color(100, 0, 100, 150)
+  this.col2 = col2 || color(100, 255, 100, 150)
+
+  this.straigtWeight = straigtWeight===undefined ? 3 : straigtWeight;  
   
   this.show = function() {
     for (var i = 0; i < this.tiles.length; i++) {
-      fill(100, (1.0 * i / this.tiles.length) * 255, 100, 150)
+      var col = lerpColor(this.col1, this.col2, 1.0*i/this.tiles.length)
+      //fill(100, (1.0 * i / this.tiles.length) * 255, 100, 150)
+      fill(col);
       this.tiles[i].show()
     }
   }
@@ -77,7 +84,7 @@ function Ribbon(x, y) {
     for (var i = 0; i < 4; i++) {
       if (i !== (currDir+2)%4) possibilities.push(i) //shouldn't go the opposite direction
     }
-    for (var i = 0; i < straigtWeight; i++){
+    for (var i = 0; i < this.straigtWeight; i++){
       possibilities.push(currDir)   
     }
     
