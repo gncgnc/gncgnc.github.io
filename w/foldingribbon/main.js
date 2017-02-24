@@ -6,7 +6,8 @@ var ribbon, myCanvas, col1, col2,
     tileSize = 20, 
     maxTiles = 100, 
     framesPerStep = 1,
-    straigtWeight = 15,
+    straigtWeight = 5,
+    infinite = true,
     settings
 
 
@@ -14,15 +15,19 @@ function setup() {
   myCanvas = createCanvas(600, 600).elt;
   myCanvas.id = "myCanvas";
   if(windowHeight > windowWidth) {
-  	myCanvas.style.width = "90vw"
-  	myCanvas.style.height = "90vw"
-    settings = QuickSettings.create(windowWidth*.5-100, windowHeight*0.8, "ribbon settings");
+  	myCanvas.style.width = "95vw"
+  	myCanvas.style.height = "95vw"
+    settings = QuickSettings.create(windowWidth*.5-100, windowHeight*0.95, "ribbon settings");
 
   } else {
 		myCanvas.style.width = "95vh"
   	myCanvas.style.height = "95vh"
+    infinite = false;
+    maxTiles = 500;
     settings = QuickSettings.create(0, 0, "ribbon settings");
   }
+
+  initSettings();
 
   noStroke()
 
@@ -31,21 +36,23 @@ function setup() {
     var rx = snap(mouseX, ribbon.size)
     var ry = snap(mouseY, ribbon.size)
     ribbon = new Ribbon(rx, ry)
+
+    background(0)
   }
 
   col1 = colorAlpha(col1hex, 150.0/255) 
   col2 = colorAlpha(col2hex, 150.0/255)
   ribbon = new Ribbon(width*.5,height*.5)
 
-
-  initSettings();
+  background(0)
 }
 
 function draw() {
-  background(0)
+  if(!infinite) {
+    background(0)
+    if(ribbon.tiles.length>=maxTiles) ribbon.tiles.splice(0,ribbon.tiles.length - maxTiles)
+  }
   ribbon.show()
-  
-  if(ribbon.tiles.length>=maxTiles) ribbon.tiles.splice(0,1)
   
   if(frameCount%framesPerStep===0) {
     ribbon.next();
@@ -61,25 +68,28 @@ function initSettings() {
     .addHTML("", "Adjust the ribbon's width, length, colors or foldiness here.").hideTitle("")
     .addRange("width", 5, 40, 30, 1, function(val){
       tileSize = val;
-      ribbon = new Ribbon(snap(width/2,ribbon.size),snap(height/2,ribbon.size))
+      ribbon = new Ribbon(snap(width/2,tileSize),snap(height/2,tileSize))
     })
-
-    //TODO: add infinite ribbon with drawing on top of current canvas 
-    .addRange("length", 20, 10000, 50, 1, function (val) {
+    .addRange("length", 20, 1000, maxTiles, 1, function (val) {
       maxTiles = val;
-      ribbon = new Ribbon(snap(width/2,ribbon.size),snap(height/2,ribbon.size))
     })
-    .addColor("start color", col1hex, function(val){
+    .addBoolean("infinite", infinite, function(val) {
+      infinite = val
+    })
+    .addColor("start color", col1hex, function(val) {
       col1 = colorAlpha(val, 150.0/255);
       ribbon.col1 = col1;
     })
-    .addColor("end color", col2hex, function(val){
+    .addColor("end color", col2hex, function(val) {
       col2 = colorAlpha(val, 150.0/255);
       ribbon.col2 = col2;
     })
-    .addRange("foldiness", 0.1, 1, 0.8, 0.08, function(val){
+    .addRange("foldiness", 0.1, 1, 0.7, 0.08, function(val) {
       straigtWeight = int((1 - val)*15) 
       ribbon.straigtWeight = straigtWeight 
+    })
+    .addButton("save", function() {
+      save("foldingribbon"+new Date().valueof()+".png")
     })
 }
 

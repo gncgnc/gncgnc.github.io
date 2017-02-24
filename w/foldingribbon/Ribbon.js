@@ -12,11 +12,20 @@ function Ribbon(x, y) {
   this.straigtWeight = straigtWeight===undefined ? 3 : straigtWeight;  
   
   this.show = function() {
-    for (var i = 0; i < this.tiles.length; i++) {
-      var col = lerpColor(this.col1, this.col2, 1.0*i/this.tiles.length)
-      //fill(100, (1.0 * i / this.tiles.length) * 255, 100, 150)
-      fill(col);
-      this.tiles[i].show()
+    if(infinite) {
+      var col = lerpColor(this.col1, this.col2, 2*abs(float(this.tiles.length)%maxTiles / maxTiles - 0.5))
+      fill(col)
+      if(this.tiles.length > 3) this.tiles[this.tiles.length-2].show()
+
+      console.log(2*abs(float(this.tiles.length)%maxTiles / maxTiles - 0.5))
+    } else {
+      for (var i = 0; i < this.tiles.length; i++) {
+        var col = lerpColor(this.col1, this.col2, 1.0*i/this.tiles.length)
+        //fill(100, (1.0 * i / this.tiles.length) * 255, 100, 150)
+        fill(col);
+
+        this.tiles[i].show()
+      }
     }
   }
   

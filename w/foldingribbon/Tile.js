@@ -7,7 +7,7 @@ var Tile = function(x,y,type){
   
   this.show = function(){
     push()
-    var trX = this.wrap(this.x, width),
+    var trX = this.wrap(this.x, width);
         trY = this.wrap(this.y, height); 
     translate(trX, trY)
     switch(this.type){
