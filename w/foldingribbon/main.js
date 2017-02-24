@@ -65,7 +65,7 @@ function keyPressed(){
 
 function initSettings() {
   settings
-    .addHTML("", "Adjust the ribbon's width, length, colors or foldiness here.").hideTitle("")
+    .addHTML("", "Adjust the ribbon's width, length, colors or foldiness here. Infinite mode recommended for mobile.").hideTitle("")
     .addRange("width", 5, 40, 30, 1, function(val){
       tileSize = val;
       ribbon = new Ribbon(snap(width/2,tileSize),snap(height/2,tileSize))
@@ -89,7 +89,7 @@ function initSettings() {
       ribbon.straigtWeight = straigtWeight 
     })
     .addButton("save", function() {
-      save("foldingribbon"+new Date().valueof()+".png")
+      save("foldingribbon"+random(1000)+".png")
     })
 }
 
