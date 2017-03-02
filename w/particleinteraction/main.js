@@ -1,7 +1,7 @@
 var ps = [], settings, wait //used in clearing particles after showing them
     params = {
       numParticles: 50,
-      drawDist: 20, 
+      drawDist: 60, 
       interactDist: 60, 
       forceMultiplier: 0.001,
       showParticles: false,
