@@ -8,6 +8,8 @@ var ribbon, myCanvas, col1, col2,
     framesPerStep = 1,
     straigtWeight = 5,
     infinite = true,
+    bgcolor = "#000000",
+    alpha = 150,
     settings
 
 
@@ -23,7 +25,7 @@ function setup() {
 		myCanvas.style.width = "95vh"
   	myCanvas.style.height = "95vh"
     infinite = false;
-    maxTiles = 500;
+    maxTiles = 250;
     settings = QuickSettings.create(0, 0, "ribbon settings");
   }
 
@@ -37,19 +39,19 @@ function setup() {
     var ry = snap(mouseY, ribbon.size)
     ribbon = new Ribbon(rx, ry)
 
-    background(0)
+    background(bgcolor)
   }
 
   col1 = colorAlpha(col1hex, 150.0/255) 
   col2 = colorAlpha(col2hex, 150.0/255)
   ribbon = new Ribbon(width*.5,height*.5)
 
-  background(0)
+  background(bgcolor)
 }
 
 function draw() {
   if(!infinite) {
-    background(0)
+    background(bgcolor)
     if(ribbon.tiles.length>=maxTiles) ribbon.tiles.splice(0,ribbon.tiles.length - maxTiles)
   }
   ribbon.show()
@@ -76,13 +78,24 @@ function initSettings() {
     .addBoolean("infinite", infinite, function(val) {
       infinite = val
     })
+    .addRange("transparency", 0, 1, 150/250, 1/250, function(val) {
+      alpha = 1 - val;
+      col1 = colorAlpha(col1, alpha);
+      ribbon.col1 = col1;
+      col2 = colorAlpha(col2, alpha);
+      ribbon.col2 = col2;
+    })
     .addColor("start color", col1hex, function(val) {
-      col1 = colorAlpha(val, 150.0/255);
+      col1 = colorAlpha(val, alpha);
       ribbon.col1 = col1;
     })
     .addColor("end color", col2hex, function(val) {
-      col2 = colorAlpha(val, 150.0/255);
+      col2 = colorAlpha(val, alpha);
       ribbon.col2 = col2;
+    })
+    .addColor("background color", bgcolor, function(val) {
+      bgcolor = val;
+      background(bgcolor)
     })
     .addRange("foldiness", 0.1, 1, 0.7, 0.08, function(val) {
       straigtWeight = int((1 - val)*15) 
