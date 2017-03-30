@@ -1,6 +1,6 @@
 'use strict'
 
-var img, colors = [];
+var img, colors = [], canvasElt, numColors = 5;
 
 function preload() {
   img = loadImage("http://unsplash.it/256?random")
@@ -10,29 +10,71 @@ function preload() {
 
 
 function setup() {
-  var myCanvas = createCanvas(600,600).elt;
-  myCanvas.id = "myCanvas";
+  var canvasElt = createCanvas(600,600);
+  canvasElt.id = "myCanvas";
   if(windowHeight > windowWidth) {
-    myCanvas.style.width = "95vw"
-    myCanvas.style.height = "95vw"
+    canvasElt.style.width = "95vw"
+    canvasElt.style.height = "95vw"
   } else {
-    myCanvas.style.width = "95vh"
-    myCanvas.style.height = "95vh"
+    canvasElt.style.width = "95vh"
+    canvasElt.style.height = "95vh"
   }
-
 
   background(0)
   image(img,0,(height-img.height)/2)
 
+  processImage();
 
+  image(img,0,0)
+
+  noStroke()
+
+  // palette aesthetic~~~~ 
+  // for (var i = 0; i < colors.length; i++) {
+  //   var col = colors[i];
+  //   fill(col)
+  //   rect((i+.25)/colors.length * width, 
+  //           height*.85, 
+  //           width*.05,
+  //           width*.05)
+  // }
+
+  canvasElt.dragOver(function() {
+    canvasElt.style("border", "solid"); 
+  });
+  canvasElt.dragLeave(function() {
+    canvasElt.style("border", "hidden");
+  });
+  canvasElt.drop(function(file) {
+    // var imgElt = createImg(file.data).hide();
+    // img = loadImage(imgElt.elt.src)
+    console.log(file)
+    img = loadImage(file.data, function() {
+      img.resizeNN(256,0);
+      processImage()
+      background(0)
+      image(img,0,(height-img.height)/2)
+    })
+  }, function() {
+    canvasElt.style("border", "hidden");
+  });
+}
+
+
+// 
+function processImage() {
   img.loadPixels()
-  for (var i = 0; i < 5; i++) {
+
+  // get random colors
+  colors = []
+  for (var i = 0; i < numColors; i++) {
     colors.push(img.get(random(img.width), 
                         random(img.height)
                         )
                 )
   }
 
+  // split image by colors
   for(var x=0; x<img.width; x++) {
     for(var y=0; y<img.height; y++) {
       var ind = 4*(y*img.width + x)
@@ -40,30 +82,19 @@ function setup() {
           g = img.pixels[ind+1],
           b = img.pixels[ind+2],
           a = img.pixels[ind+3]
-      // img.pixels[ind] = (g + b)/2;
-      // img.pixels[ind+1] = (b + r)/2;
-      // img.pixels[ind+2] = (r + g)/2; 
-      //var currColor = img.get(x,y)
+
+      // set pixel to nearest color 
+      // - can just find nearest color and set to a different color  
       img.set(x,y,getNearestColor([r,g,b,a], colors))
     }    
   }
-
-
   img.updatePixels()
-  img.resizeNN(width,0)
-  image(img,0,0)
 
-  noStroke()
-  for (var i = 0; i < colors.length; i++) {
-    var col = colors[i];
-    fill(col)
-    rect((i+.25)/colors.length * width, 
-            height*.85, 
-            width*.05,
-            width*.05)
-  }
+  // resize the image for psuedo-resolution
+  img.resizeNN(width,0)
 }
 
+// HELPERS
 function getNearestColor(c,arr) {
   var dist = 1e7;
   var nearestColorInd = 0;
@@ -104,9 +135,9 @@ p5.Image.prototype.resizeNN = function(width, height) {
   temp.loadPixels()
   for(var x=0; x<temp.width; x++) {
     for(var y=0; y<temp.height; y++) {
-      var sourceInd = 4*(Math.floor(y/yScale)*this.width + Math.floor(x/xScale))
+      var sourceInd = 4*(Math.floor(y/yScale)*this.width + Math.floor(x/xScale))      
       var targetInd = 4*(y*temp.width + x)
-      var sourceP = this.pixels.slice(sourceInd,sourceInd+4)//this.get(x/wScale, y/hScale)
+      var sourceP = this.pixels.slice(sourceInd,sourceInd+4)
       temp.pixels[targetInd] = sourceP[0]
       temp.pixels[targetInd+1] = sourceP[1]
       temp.pixels[targetInd+2] = sourceP[2]
